@@ -4,6 +4,7 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "3.88.0"
     }
+
   }
 }
 
@@ -56,7 +57,7 @@ resource "azurerm_network_security_rule" "mtc-dev-rule" {
   protocol                    = "*"
   source_port_range           = "*"
   destination_port_range      = "*"
-  source_address_prefix       = "72.14.201.149/32"
+  source_address_prefix       = "112.207.178.254/32"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.mtc-rg.name
   network_security_group_name = azurerm_network_security_group.mtc-sg.name
@@ -87,7 +88,37 @@ resource "azurerm_network_interface" "mtc-nic" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.mtc-subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id  = azurerm_public_ip.mtc-ip.id
+    public_ip_address_id          = azurerm_public_ip.mtc-ip.id
+  }
+
+  tags = {
+    environment = "dev"
+  }
+}
+
+resource "azurerm_linux_virtual_machine" "mtc-vm" {
+  name                  = "mtc-vm"
+  location              = azurerm_resource_group.mtc-rg.location
+  resource_group_name   = azurerm_resource_group.mtc-rg.name
+  size                  = "Standard_B1s"
+  admin_username        = "adminuser"
+  network_interface_ids = [azurerm_network_interface.mtc-nic.id]
+
+  admin_ssh_key {
+    username   = "adminuser"
+    public_key = file("~/.ssh/mtcazurekey.pub")
+  }
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts-gen2"
+    version   = "latest"
   }
 
   tags = {
@@ -131,3 +162,9 @@ resource "azurerm_network_interface" "mtc-nic" {
 #terraform plan
 #terraform apply -auto-approve
 #terraform state list
+
+#-------
+
+#ssh-keygen -t rsa
+
+#ssh -i ~/.ssh/mtcazurekey adminuser@4.194.161.63

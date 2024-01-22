@@ -55,3 +55,10 @@ resource "azurerm_virtual_network" "mtc-vn" {
 # terraform state list
 # terraform state show azurerm_resource_group.mtc-rg
 # terraform show
+
+#-------
+
+#terraform state list
+#terraform plan -destroy
+#terraform apply -destroy
+

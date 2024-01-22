@@ -31,6 +31,12 @@ resource "azurerm_virtual_network" "mtc-vn" {
   }
 }
 
+resource "azurerm_subnet" "mtc-subnet" {
+  name                 = "mtc-subnet"
+  resource_group_name  = azurerm_resource_group.mtc-rg.name
+  virtual_network_name = azurerm_virtual_network.mtc-vn.name
+  address_prefixes     = ["10.123.1.0/24"]
+}
 #terraform init
 #terraform fmt
 #terraform plan
@@ -62,3 +68,8 @@ resource "azurerm_virtual_network" "mtc-vn" {
 #terraform plan -destroy
 #terraform apply -destroy
 
+#-------
+#terraform fmt
+#terraform plan
+#terraform apply -auto-approve
+#terraform state list

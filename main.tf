@@ -50,3 +50,8 @@ resource "azurerm_virtual_network" "mtc-vn" {
 
 #git push -u origin main
 
+#-------
+
+# terraform state list
+# terraform state show azurerm_resource_group.mtc-rg
+# terraform show

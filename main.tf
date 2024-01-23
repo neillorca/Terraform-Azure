@@ -57,7 +57,7 @@ resource "azurerm_network_security_rule" "mtc-dev-rule" {
   protocol                    = "*"
   source_port_range           = "*"
   destination_port_range      = "*"
-  source_address_prefix       = "112.207.178.254/32"
+  source_address_prefix       = "*"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.mtc-rg.name
   network_security_group_name = azurerm_network_security_group.mtc-sg.name
@@ -103,6 +103,8 @@ resource "azurerm_linux_virtual_machine" "mtc-vm" {
   size                  = "Standard_B1s"
   admin_username        = "adminuser"
   network_interface_ids = [azurerm_network_interface.mtc-nic.id]
+
+  custom_data = filebase64("customdata.tpl")
 
   admin_ssh_key {
     username   = "adminuser"
@@ -168,3 +170,6 @@ resource "azurerm_linux_virtual_machine" "mtc-vm" {
 #ssh-keygen -t rsa
 
 #ssh -i ~/.ssh/mtcazurekey adminuser@4.194.161.63
+
+#-------
+#custom_data = filebase64("file location")
